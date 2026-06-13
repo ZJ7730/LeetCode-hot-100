@@ -2,6 +2,13 @@
  * @program: suanfa
  * @ClassName: H_104
  * @description: 二叉树的最大深度
+ *
+ * 面试笔记：
+ * - 题目定位：求根节点到最深叶子节点的节点数。
+ * - 核心思路：递归返回当前子树最大高度。
+ * - 状态含义：`leftHeight/rightHeight` 分别是左右子树高度。
+ * - 复杂度：时间 O(n)，空间 O(h)。
+ *
  * @author: zhoujie07
  * @create: 2026-05-09
  **/

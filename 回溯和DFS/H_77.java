@@ -4,7 +4,14 @@ import java.util.List;
 /**
  * @program: suanfa
  * @ClassName: H_77
- * @description:
+ * @description: 77. 组合
+ *
+ * 面试笔记：
+ * - 题目定位：从 `1..n` 中选出 `k` 个数。
+ * - 核心思路：组合问题使用 `startIndex` 控制每层从哪里开始枚举，避免重复选择之前的元素。
+ * - 状态含义：`path` 保存当前已选数字，`path.size() == k` 时收集结果。
+ * - 复杂度：时间 O(k * C(n,k))，空间 O(k)。
+ *
  * @author: zhoujie07
  * @create: 2026-04-28
  **/

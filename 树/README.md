@@ -5,14 +5,18 @@
 | 文件 | 题号 | 题目 | 核心方法 | 模板类型 | 复杂度 |
 | --- | --- | --- | --- | --- | --- |
 | `H_94.java` | 94 | 二叉树的中序遍历 | 左子树 -> 根 -> 右子树递归收集 | DFS 中序遍历 | 时间 `O(n)`，空间 `O(h)` |
+| `H_96.java` | 96 | 不同的二叉搜索树 | 区间 DP 统计根节点划分方式 | 卡特兰数 DP | 时间 `O(n^2)`，空间 `O(n)` |
 | `H_98.java` | 98 | 验证二叉搜索树 | 中序遍历，用 `pre` 判断是否严格递增 | BST 中序性质 | 时间 `O(n)`，空间 `O(h)` |
 | `H_101.java` | 101 | 对称二叉树 | 同时比较外侧和内侧节点 | 双节点递归 | 时间 `O(n)`，空间 `O(h)` |
 | `H_102.java` | 102 | 二叉树的层序遍历 | `Queue<TreeNode>` 按层 BFS | BFS 层序遍历 | 时间 `O(n)`，空间 `O(w)` |
 | `H_104.java` | 104 | 二叉树的最大深度 | 后序递归返回左右子树最大高度 | 树高度 | 时间 `O(n)`，空间 `O(h)` |
 | `H_111.java` | 111 | 二叉树的最小深度 | 处理单子树为空的情况后取最小值 | 树高度 | 时间 `O(n)`，空间 `O(h)` |
 | `H_114.java` | 114 | 二叉树展开为链表 | 反向前序：右 -> 左 -> 根，用 `prev` 串联 | 树结构变换 | 时间 `O(n)`，空间 `O(h)` |
+| `H_199.java` | 199 | 二叉树的右视图 | BFS 按层遍历，取每层最后一个节点 | BFS 右视图 | 时间 `O(n)`，空间 `O(w)` |
 | `H_226.java` | 226 | 反转二叉树 | 当前节点交换左右子树，再递归处理子树 | 递归改结构 | 时间 `O(n)`，空间 `O(h)` |
+| `H_230.java` | 230 | 二叉搜索树中第 K 小的元素 | 中序遍历计数，走到第 k 个节点即答案 | BST 中序计数 | 时间 `O(n)`，空间 `O(h)` |
 | `H_236.java` | 236 | 二叉树的最近公共祖先 | 左右子树分别查找，左右都有则当前节点为祖先 | 后序递归 | 时间 `O(n)`，空间 `O(h)` |
+| `H_337.java` | 337 | 打家劫舍 III | 树形 DP，返回偷/不偷两种状态 | 树形 DP | 时间 `O(n)`，空间 `O(h)` |
 | `H_538.java` | 538 | 把二叉搜索树转换为累加树 | 反中序遍历，用 `prev` 累加大于当前节点的值 | BST 反中序 | 时间 `O(n)`，空间 `O(h)` |
 | `H_543.java` | 543 | 二叉树的直径 | 递归返回高度，全局更新 `left + right` | 树形 DP | 时间 `O(n)`，空间 `O(h)` |
 | `H_617.java` | 617 | 合并二叉树 | 同位置节点相加，空节点返回另一棵树 | 递归构造 | 时间 `O(n)`，空间 `O(h)` |
@@ -24,8 +28,11 @@
 - 二叉树题先判断使用 DFS 还是 BFS：需要按层输出通常用 BFS，其余多数用递归 DFS。
 - DFS 的核心是明确当前递归函数的返回值含义：返回高度、返回节点、返回布尔值或直接修改树结构。
 - BST 题优先想到中序遍历，因为 BST 中序结果严格递增。
+- BST 还能用中序计数类题，比如第 k 小元素。
 - 树形 DP 常见写法是递归返回一个子树信息，同时用全局变量更新答案。
+- 树上打家劫舍这类题通常要为每个节点同时维护“选”和“不选”两种状态。
 - 修改树结构时要注意递归顺序，例如展开为链表需要从右到左处理。
+- BFS 视图题常见做法是按层遍历，取每层最后一个节点。
 - LeetCode 面试通常已提供 `TreeNode`，当前目录既有公共 `TreeNode.java`，部分题也在类内重复定义节点结构。
 
 ## 3. 通用解题模板
@@ -118,6 +125,25 @@ boolean isValidBST(TreeNode root) {
 }
 ```
 
+### BST 中序计数模板
+
+对应 `H_230.java`：
+
+```java
+void inorder(TreeNode root) {
+    if (root == null || count == 0) {
+        return;
+    }
+    inorder(root.left);
+    count--;
+    if (count == 0) {
+        result = root.val;
+        return;
+    }
+    inorder(root.right);
+}
+```
+
 ### 树形 DP 模板
 
 对应 `H_543.java`：
@@ -133,6 +159,23 @@ int dfs(TreeNode root) {
     int right = dfs(root.right);
     answer = Math.max(answer, left + right);
     return Math.max(left, right) + 1;
+}
+```
+
+### 树形 DP / 偷与不偷模板
+
+对应 `H_337.java`：
+
+```java
+int[] dfs(TreeNode root) {
+    if (root == null) {
+        return new int[]{0, 0};
+    }
+    int[] left = dfs(root.left);
+    int[] right = dfs(root.right);
+    int steal = root.val + left[0] + right[0];
+    int skip = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+    return new int[]{skip, steal};
 }
 ```
 
@@ -157,13 +200,38 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
+### BFS 右视图模板
+
+对应 `H_199.java`：
+
+```java
+Queue<TreeNode> queue = new LinkedList<>();
+queue.offer(root);
+while (!queue.isEmpty()) {
+    int size = queue.size();
+    for (int i = 0; i < size; i++) {
+        TreeNode node = queue.poll();
+        if (i == size - 1) {
+            result.add(node.val);
+        }
+        if (node.left != null) {
+            queue.offer(node.left);
+        }
+        if (node.right != null) {
+            queue.offer(node.right);
+        }
+    }
+}
+```
+
 ## 4. 题目分类
 
 - 遍历基础：`H_94.java`、`H_102.java`
 - 树的属性：`H_104.java`、`H_111.java`、`H_543.java`
 - 树的变换：`H_226.java`、`H_617.java`、`H_114.java`
-- BST：`H_98.java`、`H_538.java`
-- 递归综合：`H_101.java`、`H_236.java`
+- BST：`H_96.java`、`H_98.java`、`H_230.java`、`H_538.java`
+- 递归综合：`H_101.java`、`H_236.java`、`H_337.java`
+- 视图遍历：`H_199.java`
 
 ## 5. 每题详解
 
@@ -186,6 +254,16 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - 复杂度：时间 `O(n)`，空间 `O(w)`。
 - 面试易错点：必须先保存当前层 `size`，否则下一层节点会混入当前层。
 - 可复述话术：BFS 按层遍历时，队列里先放根，每次处理队列当前长度个节点，这些节点就是同一层。
+
+### H_199 - 二叉树的右视图
+
+- 题目定位：返回二叉树从右侧看到的节点值。
+- 当前代码思路：按层 BFS，每层最后一个节点就是右视图节点。
+- 关键变量：`size` 固定当前层节点个数；`result` 保存右视图结果。
+- 解题步骤：根节点入队；按层弹出节点；记录每层最后一个节点；把左右孩子继续入队。
+- 复杂度：时间 `O(n)`，空间 `O(w)`。
+- 面试易错点：不是看右孩子，而是看“这一层最后访问到的节点”。
+- 可复述话术：从右侧看树时，本质上就是每一层最右边的节点会被看到，所以 BFS 每层取最后一个即可。
 
 ### H_104 - 二叉树的最大深度
 
@@ -286,6 +364,26 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - 复杂度：时间 `O(n)`，空间 `O(h)`。
 - 面试易错点：这是普通二叉树，不要使用 BST 大小关系。
 - 可复述话术：如果左右子树各找到一个目标，当前节点就是最近公共祖先；如果只在一边找到，就把那边结果向上返回。
+
+### H_230 - 二叉搜索树中第 K 小的元素
+
+- 题目定位：在 BST 中找到第 `k` 小的元素。
+- 当前代码思路：利用 BST 中序遍历递增的性质，数到第 `k` 个节点时直接记录答案。
+- 关键变量：`count` 记录还需要访问多少个节点；`result` 保存最终答案。
+- 解题步骤：递归左子树；访问当前节点时 `count--`；当 `count == 0` 时记录答案；继续递归右子树前可提前停止。
+- 复杂度：时间 `O(n)`，空间 `O(h)`。
+- 面试易错点：中序顺序一旦确定，第 `k` 小就是中序遍历第 `k` 个访问到的节点。
+- 可复述话术：BST 中序遍历本身就是升序序列，所以我只要数到第 k 个节点就能得到答案。
+
+### H_337 - 打家劫舍 III
+
+- 题目定位：在树上选节点偷窃，但不能同时偷父子节点。
+- 当前代码思路：树形 DP，每个节点返回两个状态，偷当前节点和不偷当前节点。
+- 关键变量：`dp[0]` 表示不偷当前节点的最大收益；`dp[1]` 表示偷当前节点的最大收益。
+- 解题步骤：递归左右子树；偷当前节点时只能加左右子树不偷的状态；不偷当前节点时左右子树可取最大值。
+- 复杂度：时间 `O(n)`，空间 `O(h)`。
+- 面试易错点：不要只记一个最大值，必须同时保留“偷”和“不偷”两种状态。
+- 可复述话术：树上不能相邻偷窃，所以每个节点都要拆成偷和不偷两种状态，再向上合并。
 
 ## 6. 面试高频易错点
 

@@ -4,7 +4,14 @@ import java.util.List;
 /**
  * @program: suanfa
  * @ClassName: H_77
- * @description:
+ * @description: 77. 组合，剪枝版
+ *
+ * 面试笔记：
+ * - 题目定位：`H_77` 的优化版本，核心是减少无效搜索分支。
+ * - 核心思路：如果当前还需要 `k - path.size()` 个数，那么后面至少要留出这么多位置，所以循环右边界可以提前收缩。
+ * - 状态含义：`path` 保存当前组合，`startIndex` 控制下一层起点。
+ * - 复杂度：结果规模不变，但剪枝后减少无效递归。
+ *
  * @author: zhoujie07
  * @create: 2026-04-28
  **/

@@ -4,6 +4,13 @@ import java.util.PriorityQueue;
  * @program: suanfa
  * @ClassName: H_215
  * @description: 215. 数组中的第K个最大元素
+ *
+ * 面试笔记：
+ * - 题目定位：找排序后第 k 大的元素，不要求完整排序。
+ * - 核心思路：维护一个大小为 k 的小顶堆，堆里始终保存当前最大的 k 个数。
+ * - 为什么正确：堆顶是这 k 个数里最小的，也就是整个数组的第 k 大。
+ * - 复杂度：时间 O(n log k)，空间 O(k)。
+ *
  * <p>
  * 核心思路：
  * 1. 维护一个大小为 k 的小顶堆。
@@ -29,6 +36,7 @@ public class H_215 {
             minHeap.offer(num);
 
             if (minHeap.size() > k) {
+                // 只保留最大的 k 个元素
                 minHeap.poll();
             }
         }

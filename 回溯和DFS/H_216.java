@@ -5,6 +5,14 @@ import java.util.List;
  * @program: suanfa
  * @ClassName: H_216
  * @description: 组合总和III
+ *
+ * 面试笔记：
+ * - 题目定位：从 `1..9` 中选 `k` 个数，使它们的和等于 `n`。
+ * - 核心思路：组合回溯 + 固定候选范围 + `sum` 剪枝。
+ * - 状态含义：`path` 保存当前选择；`sum` 记录路径总和；`startIndex` 控制每个数字最多用一次。
+ * - 剪枝规则：`sum > n` 直接返回；只有当数量和总和同时满足时才收集结果。
+ * - 复杂度：和结果规模相关，空间 O(k)。
+ *
  * @author: zhoujie07
  * @create: 2026-04-29
  **/

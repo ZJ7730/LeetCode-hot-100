@@ -6,6 +6,13 @@ import java.util.Queue;
  * @program: suanfa
  * @ClassName: H_239
  * @description: 239. 滑动窗口最大值
+ *
+ * 面试笔记：
+ * - 题目定位：求每个长度为 k 的窗口中的最大值。
+ * - 核心思路：使用单调队列维护窗口内从大到小的元素，队首始终是当前最大值。
+ * - 状态含义：队列保存的是候选最大值，入队时要删除所有比当前元素小的尾部元素。
+ * - 复杂度：时间 O(n)，空间 O(k)。
+ *
  * @author: zhoujie07
  * @create: 2026-05-19
  **/
@@ -41,6 +48,7 @@ public class H_239 {
 
         public void push(int val) {
             while (!queue.isEmpty() && val > queue.getLast()) {
+                // 维持队列从大到小的单调性
                 queue.removeLast();
             }
             queue.addLast(val);

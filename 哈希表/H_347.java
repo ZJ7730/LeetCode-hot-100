@@ -6,6 +6,13 @@ import java.util.PriorityQueue;
  * @program: suanfa
  * @ClassName: H_347
  * @description: 347. 前 K 个高频元素
+ *
+ * 面试笔记：
+ * - 题目定位：返回数组中出现频率最高的 k 个元素，不要求结果顺序。
+ * - 核心思路：先统计频率，再用大小为 k 的小顶堆保留频率最高的 k 个元素。
+ * - 堆语义：堆里存 `[数字, 频率]`，堆顶始终是当前保留集合里频率最低的元素。
+ * - 复杂度：时间 O(n log k)，空间 O(n)。
+ *
  * <p>
  * 核心思路：
  * 1. 先用 HashMap 统计每个数字出现的频率。
@@ -32,6 +39,7 @@ public class H_347 {
         countMap.forEach((num, count) -> {
             minHeap.offer(new int[]{num, count});
             if (minHeap.size() > k) {
+                // 只保留频率最高的 k 个元素
                 minHeap.poll();
             }
         });

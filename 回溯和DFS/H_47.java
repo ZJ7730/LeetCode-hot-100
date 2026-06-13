@@ -6,6 +6,14 @@ import java.util.List;
  * @program: suanfa
  * @ClassName: H_47
  * @description: 全排列 II https://leetcode.cn/problems/permutations-ii/description/
+ *
+ * 面试笔记：
+ * - 题目定位：数组中有重复数字，返回所有不重复的排列。
+ * - 核心思路：先排序，再在排列模板上做同层去重。
+ * - 去重规则：如果当前值和前一个值相同，且前一个值在当前路径里没有被使用，就跳过当前值。
+ * - 状态含义：`used[]` 控制元素是否已进入当前排列。
+ * - 复杂度：时间 O(n * n!)，空间 O(n)。
+ *
  * @author: zhoujie07
  * @create: 2026-05-06
  **/

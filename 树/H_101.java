@@ -2,6 +2,13 @@
  * @program: suanfa
  * @ClassName: H_101
  * @description: 对称二叉树
+ *
+ * 面试笔记：
+ * - 题目定位：判断二叉树是否关于中心轴对称。
+ * - 核心思路：递归同时比较左子树和右子树的镜像位置。
+ * - 状态含义：外侧比较 `left.left` 和 `right.right`，内侧比较 `left.right` 和 `right.left`。
+ * - 复杂度：时间 O(n)，空间 O(h)。
+ *
  * @author: zhoujie07
  * @create: 2026-05-08
  **/

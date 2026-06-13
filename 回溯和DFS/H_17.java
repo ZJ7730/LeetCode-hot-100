@@ -6,6 +6,14 @@ import java.util.Map;
  * @program: suanfa
  * @ClassName: H_17
  * @description: 电话号码的字母组合
+ *
+ * 面试笔记：
+ * - 题目定位：每个数字对应一组字母，要求把所有可能的字符串组合都生成出来。
+ * - 核心思路：按数字下标逐层递归，每层枚举当前数字对应的所有字母。
+ * - 状态含义：`index` 表示正在处理第几个数字，`path` 保存当前构造中的字符串片段。
+ * - 结束条件：当 `index == digits.length()` 时，说明一条完整路径构造完成。
+ * - 复杂度：时间 `O(3^m * 4^n)`，空间 `O(digits.length)`。
+ *
  * @author: zhoujie07
  * @create: 2026-04-30
  **/

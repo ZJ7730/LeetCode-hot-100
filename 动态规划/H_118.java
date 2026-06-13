@@ -5,6 +5,13 @@ import java.util.List;
  * @program: suanfa
  * @ClassName: H_118
  * @description: 118. 杨辉三角
+ *
+ * 面试笔记：
+ * - 题目定位：生成杨辉三角前 `numRows` 行。
+ * - 核心思路：每一行的两端都是 1，中间元素等于上一行正上方两个数之和。
+ * - 状态含义：`result.get(i)` 表示第 `i` 行的所有元素。
+ * - 复杂度：时间 O(numRows^2)，空间 O(numRows^2)。
+ *
  * @author: zhoujie07
  * @create: 2026-06-07
  **/
