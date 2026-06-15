@@ -6,4 +6,9 @@
  * @create: 2026-05-26
  **/
 public class H_581 {
+
+    public int findUnsortedSubarray(int[] nums) {
+        return 0;
+    }
+
 }
