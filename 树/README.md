@@ -17,6 +17,7 @@
 | `H_230.java` | 230 | 二叉搜索树中第 K 小的元素 | 中序遍历计数，走到第 k 个节点即答案 | BST 中序计数 | 时间 `O(n)`，空间 `O(h)` |
 | `H_236.java` | 236 | 二叉树的最近公共祖先 | 左右子树分别查找，左右都有则当前节点为祖先 | 后序递归 | 时间 `O(n)`，空间 `O(h)` |
 | `H_337.java` | 337 | 打家劫舍 III | 树形 DP，返回偷/不偷两种状态 | 树形 DP | 时间 `O(n)`，空间 `O(h)` |
+| `H_437.java` | 437 | 路径总和 III | DFS 维护路径前缀和，统计历史前缀出现次数 | 前缀和 + 回溯 | 时间 `O(n)`，空间 `O(h)` |
 | `H_538.java` | 538 | 把二叉搜索树转换为累加树 | 反中序遍历，用 `prev` 累加大于当前节点的值 | BST 反中序 | 时间 `O(n)`，空间 `O(h)` |
 | `H_543.java` | 543 | 二叉树的直径 | 递归返回高度，全局更新 `left + right` | 树形 DP | 时间 `O(n)`，空间 `O(h)` |
 | `H_617.java` | 617 | 合并二叉树 | 同位置节点相加，空节点返回另一棵树 | 递归构造 | 时间 `O(n)`，空间 `O(h)` |
@@ -31,6 +32,7 @@
 - BST 还能用中序计数类题，比如第 k 小元素。
 - 树形 DP 常见写法是递归返回一个子树信息，同时用全局变量更新答案。
 - 树上打家劫舍这类题通常要为每个节点同时维护“选”和“不选”两种状态。
+- 路径和计数题可以用前缀和，把“任意向下路径”转成当前前缀和与历史前缀和的差。
 - 修改树结构时要注意递归顺序，例如展开为链表需要从右到左处理。
 - BFS 视图题常见做法是按层遍历，取每层最后一个节点。
 - LeetCode 面试通常已提供 `TreeNode`，当前目录既有公共 `TreeNode.java`，部分题也在类内重复定义节点结构。
@@ -200,6 +202,33 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
+### 树上前缀和模板
+
+对应 `H_437.java`：
+
+```java
+Map<Long, Integer> prefixSumCount = new HashMap<>();
+prefixSumCount.put(0L, 1);
+
+int dfs(TreeNode node, long curSum, int targetSum) {
+    if (node == null) {
+        return 0;
+    }
+
+    curSum += node.val;
+    int pathCount = prefixSumCount.getOrDefault(curSum - targetSum, 0);
+
+    prefixSumCount.put(curSum, prefixSumCount.getOrDefault(curSum, 0) + 1);
+    pathCount += dfs(node.left, curSum, targetSum);
+    pathCount += dfs(node.right, curSum, targetSum);
+    prefixSumCount.put(curSum, prefixSumCount.get(curSum) - 1);
+
+    return pathCount;
+}
+```
+
+核心点：进入节点时加入当前前缀和，离开节点时恢复计数，保证 map 只表示当前根到节点这条路径。
+
 ### BFS 右视图模板
 
 对应 `H_199.java`：
@@ -231,6 +260,7 @@ while (!queue.isEmpty()) {
 - 树的变换：`H_226.java`、`H_617.java`、`H_114.java`
 - BST：`H_96.java`、`H_98.java`、`H_230.java`、`H_538.java`
 - 递归综合：`H_101.java`、`H_236.java`、`H_337.java`
+- 前缀和 + 回溯：`H_437.java`
 - 视图遍历：`H_199.java`
 
 ## 5. 每题详解
@@ -385,6 +415,16 @@ while (!queue.isEmpty()) {
 - 面试易错点：不要只记一个最大值，必须同时保留“偷”和“不偷”两种状态。
 - 可复述话术：树上不能相邻偷窃，所以每个节点都要拆成偷和不偷两种状态，再向上合并。
 
+### H_437 - 路径总和 III
+
+- 题目定位：统计二叉树中路径和等于 `targetSum` 的路径数量，路径只能从父节点向子节点方向走。
+- 当前代码思路：DFS 遍历树，同时维护从根到当前节点的前缀和；如果历史上存在 `curSum - targetSum`，说明存在一段以当前节点结尾的合法路径。
+- 关键变量：`curSum` 表示当前根到节点路径和；`prefixSumCount` 的 key 是历史前缀和，value 是出现次数。
+- 解题步骤：初始化前缀和 `0` 出现一次；进入节点累加当前值；查找 `curSum - targetSum` 的次数；加入当前前缀和；递归左右子树；退出当前节点时回溯减一。
+- 复杂度：时间 `O(n)`，空间 `O(h)`，最坏链表形态为 `O(n)`。
+- 面试易错点：递归返回前必须回溯当前前缀和；前缀和可能超过 `int`，要用 `long`。
+- 可复述话术：这题和数组前缀和类似，只是前缀和存在于当前 DFS 路径上，所以进入节点加入 map，离开节点再移除。
+
 ## 6. 面试高频易错点
 
 - 最小深度不能直接 `1 + Math.min(left, right)`，要排除空子树。
@@ -393,6 +433,7 @@ while (!queue.isEmpty()) {
 - 二叉树直径的答案是边数，当前代码用 `left + right` 正好表示边数。
 - 最近公共祖先题要先判断 `root == p || root == q`。
 - 展开为链表时先处理右子树再处理左子树，可以避免原指针丢失。
+- 路径总和 III 的前缀和要用 `long`，并且每次递归返回前必须回溯当前前缀和计数。
 
 ## 7. 推荐刷题顺序
 
@@ -407,14 +448,15 @@ while (!queue.isEmpty()) {
 9. `H_538.java`：掌握 BST 反中序。
 10. `H_543.java`：练习树形 DP。
 11. `H_236.java`：掌握 LCA 后序递归。
-12. `H_114.java`：练习复杂指针变换。
+12. `H_437.java`：掌握树上前缀和 + 回溯。
+13. `H_114.java`：练习复杂指针变换。
 
 ## 8. 当前完成状态
 
 | 统计 | 数量 |
 | --- | ---: |
-| 已实现 | 16 |
-| 待补 | 8 |
+| 已实现 | 17 |
+| 待补 | 7 |
 | 总计 | 24 |
 
 | 状态 | 题目 |
@@ -432,6 +474,7 @@ while (!queue.isEmpty()) {
 | 已实现 | `H_230.java` 230. 二叉搜索树中第 K 小的元素 |
 | 已实现 | `H_236.java` 236. 二叉树的最近公共祖先 |
 | 已实现 | `H_337.java` 337. 打家劫舍 III |
+| 已实现 | `H_437.java` 437. 路径总和 III |
 | 已实现 | `H_538.java` 538. 把二叉搜索树转换为累加树 |
 | 已实现 | `H_543.java` 543. 二叉树的直径 |
 | 已实现 | `H_617.java` 617. 合并二叉树 |
@@ -442,7 +485,6 @@ while (!queue.isEmpty()) {
 | 待补 | `H_145.java` 145. 二叉树的后序遍历 |
 | 待补 | `H_208.java` 208. 实现 Trie |
 | 待补 | `H_297.java` 297. 二叉树的序列化与反序列化 |
-| 待补 | `H_437.java` 437. 路径总和 III |
 
 ## 9. 面试高频题
 
